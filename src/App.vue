@@ -174,6 +174,11 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+input:focus,
+button:focus {
+  outline: 0;
+}
+
 ::selection {
   background-color: #527beb;
   color: #fff;
@@ -187,7 +192,8 @@ a {
     text-decoration: none;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: #527beb;
   }
 }
