@@ -1,83 +1,41 @@
 <template>
   <div class="app-wrapper">
-    <div class="greeting" v-if="isGreeting">
-      <h1 class="greeting-title">
-        Math Quiz
-      </h1>
-      <div class="card greeting-description">
-        <p>
-          Если вы математик, то вы
-          <strike
-            ><a
-              href="https://www.youtube.com/watch?v=A0_Abt4dzAA"
-              target="_blank"
-              >должны знать счет древних шизов</a
-            ></strike
-          >
-          очень легко справитесь с этой игрой.
-        </p>
-        <p>
-          Цель игры достаточно простая: за <strong>60</strong> секунд вам нужно
-          решить максимальное количество простых арифметических задачек.<br />
-          Чем больше правильных ответов вы дадите, тем вы больший молодец <br />
-          и пусечка.
-        </p>
-        <button class="btn greeting-btn" type="button" @click="startGame">
-          Начать игру
-        </button>
-      </div>
-    </div>
-    <div class="game" v-if="isGameStarted">
-      <span class="game-time"> {{ gameTime }} </span>
-      <div class="card game-card">
-        <div
-          class="game-progress"
-          aria-hidden="true"
-          :style="progressStyle"
-        ></div>
-        <h3 class="game-problem">{{ firstNumber }} + {{ secondNumber }} = ?</h3>
-        <form class="game-form" @submit.prevent="handleAnswer">
-          <input
-            class="game-form-input"
-            type="number"
-            placeholder="Ваш ответ"
-            v-model.number="userAnswer"
-            required
-          />
-          <button class="btn game-form-btn" type="submit">Ответить</button>
-        </form>
-      </div>
-    </div>
-    <div class="finish" v-if="!isGreeting && !isGameStarted">
-      <div class="card finish-card">
-        <p>
-          Вы дали
-          <span class="finish-correct">{{ correctAnswers }}</span> правильных и
-          <span class="finish-incorrect">{{ incorrectAnswers }}</span>
-          неправильных ответов
-        </p>
-        <p>
-          Вы такой же крутой математик, как и
-          <a href="https://www.youtube.com/watch?v=ejNGCWEgJNU" target="_blank"
-            >Юрий Степанович Рыбников</a
-          >
-        </p>
-        <button class="btn finish-btn" type="button" @click="startGame">
-          Сыграть еще раз
-        </button>
-      </div>
-    </div>
+    <app-greeting @startGame="startGame" v-if="isGreeting" />
+    <app-game
+      v-else-if="isGameStarted"
+      :gameTime="gameTime"
+      :firstNumber="firstNumber"
+      :secondNumber="secondNumber"
+      :progressStyle="progressStyle"
+      @handleAnswer="handleAnswer"
+    />
+    <app-finish
+      v-else
+      :correctAnswers="correctAnswers"
+      :incorrectAnswers="incorrectAnswers"
+      :pluralForm="pluralForm"
+      @startGame="startGame"
+    />
   </div>
 </template>
 
 <script>
 import { randomInteger } from "@/helpers";
+import AppGreeting from "@/components/AppGreeting.vue";
+import AppGame from "@/components/AppGame.vue";
+import AppFinish from "@/components/AppFinish.vue";
 
 const MIN_NUMBER = 0;
 const MAX_NUMBER = 50;
 
 export default {
   name: "App",
+
+  components: {
+    AppGreeting,
+    AppGame,
+    AppFinish,
+  },
 
   data: () => ({
     isGreeting: true,
@@ -89,7 +47,6 @@ export default {
     initialTime: 60,
     gameTime: 60,
     gameTimer: null,
-    userAnswer: "",
   }),
 
   computed: {
@@ -100,6 +57,13 @@ export default {
       return {
         "animation-duration": `${this.initialTime}s`,
         "animation-play-state": this.isGameStarted ? "running" : "paused",
+      };
+    },
+    pluralForm() {
+      return {
+        correct: this.correctAnswers === 1 ? "правильный" : "правильных",
+        incorrect:
+          this.incorrectAnswers === 1 ? "неправильный" : "неправильных",
       };
     },
   },
@@ -131,14 +95,12 @@ export default {
       this.firstNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
       this.secondNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
     },
-    handleAnswer() {
-      if (this.correctAnswer === this.userAnswer) {
+    handleAnswer(userAnswer) {
+      if (this.correctAnswer === userAnswer) {
         this.correctAnswers++;
       } else {
         this.incorrectAnswers++;
       }
-
-      this.userAnswer = "";
 
       this.generateNumbers();
     },
@@ -186,15 +148,12 @@ button:focus {
 
 a {
   color: #52ebb5;
-
-  &,
-  &:hover {
-    text-decoration: none;
-  }
+  text-decoration: underline;
 
   &:hover,
   &:focus {
     color: #527beb;
+    text-decoration: none;
   }
 }
 
@@ -206,13 +165,6 @@ a {
   max-width: 700px;
   width: 100%;
   margin: 1rem auto;
-}
-
-.greeting-title {
-  color: #52ebb5;
-  text-align: center;
-  margin-bottom: 1.8rem;
-  font-size: 2.5rem;
 }
 
 .card {
@@ -237,86 +189,6 @@ a {
     background-color: transparent;
     border-color: #52ebb5;
     color: #52ebb5;
-  }
-}
-
-.greeting-btn {
-  display: block;
-  margin: auto;
-}
-
-.game {
-  display: flex;
-  flex-direction: column;
-}
-
-.game-time {
-  align-self: flex-end;
-  font-size: 1.1rem;
-  margin-bottom: 0.55rem;
-  margin-right: 1.75rem;
-}
-
-.game-progress {
-  width: 100%;
-  height: 10px;
-  background-color: #52ebb5;
-  border-radius: 2rem;
-  margin-bottom: 1.5rem;
-  animation-name: progress;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-.game-form {
-  display: flex;
-  align-items: flex-end;
-}
-
-.game-form-input {
-  background-color: transparent;
-  border: none;
-  flex-grow: 1;
-  border-bottom: 1px solid #52ebb5;
-  margin-right: 1rem;
-  padding: 1rem;
-  color: #fff;
-}
-
-.finish-card {
-  span {
-    font-weight: bold;
-
-    &.finish-correct {
-      color: #52ebb5;
-    }
-
-    &.finish-incorrect {
-      color: #eb5252;
-    }
-  }
-}
-
-.game-problem {
-  text-align: center;
-  font-size: 1.8rem;
-}
-
-.finish-btn {
-  display: block;
-  margin: auto;
-}
-
-@media screen and (max-width: 767px) {
-  .game-form {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .game-form-input {
-    width: 100%;
-    margin-bottom: 1rem;
-    margin-right: 0;
   }
 }
 
