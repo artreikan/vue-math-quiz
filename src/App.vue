@@ -14,6 +14,7 @@
       :correctAnswers="correctAnswers"
       :incorrectAnswers="incorrectAnswers"
       :pluralForm="pluralForm"
+      :fullStats="fullStats"
       @startGame="startGame"
     />
   </div>
@@ -47,6 +48,7 @@ export default {
     initialTime: 60,
     gameTime: 60,
     gameTimer: null,
+    fullStats: [],
   }),
 
   computed: {
@@ -74,6 +76,7 @@ export default {
 
   methods: {
     startGame() {
+      this.fullStats = [];
       this.correctAnswers = 0;
       this.incorrectAnswers = 0;
       this.generateNumbers();
@@ -90,16 +93,25 @@ export default {
     },
     finishGame() {
       this.isGameStarted = false;
+      console.log(this.fullStats);
     },
     generateNumbers() {
       this.firstNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
       this.secondNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
     },
+    createStatItem(type, userAnswer) {
+      return {
+        type,
+        answer: `${this.firstNumber} + ${this.secondNumber} = ${userAnswer}`,
+      };
+    },
     handleAnswer(userAnswer) {
       if (this.correctAnswer === userAnswer) {
         this.correctAnswers++;
+        this.fullStats.push(this.createStatItem("correct", userAnswer));
       } else {
         this.incorrectAnswers++;
+        this.fullStats.push(this.createStatItem("incorrect", userAnswer));
       }
 
       this.generateNumbers();

@@ -14,6 +14,7 @@
           type="number"
           placeholder="Ваш ответ"
           v-model.number="userAnswer"
+          ref="gameInput"
           required
         />
         <button class="btn game-form-btn" type="submit">Ответить</button>
@@ -46,6 +47,16 @@ export default {
     progressStyle: {
       type: Object,
       required: true,
+    },
+  },
+
+  mounted() {
+    this.$refs.gameInput.focus();
+  },
+
+  watch: {
+    firstNumber() {
+      this.$refs.gameInput.focus();
     },
   },
 

@@ -14,6 +14,18 @@
           >Юрий Степанович Рыбников</a
         >
       </p>
+      <template v-if="fullStats.length"
+        ><button
+          class="show-full-stats"
+          :class="{ 'is-showed': isFullStatsShowed }"
+          type="button"
+          @click="toggleFullStats"
+        >
+          <span>Подробная статистика</span>
+          <img src="../assets/down-arrow.svg" alt="Arrow" />
+        </button>
+        <app-full-stats :fullStats="fullStats" v-show="isFullStatsShowed"
+      /></template>
       <button class="btn finish-btn" type="button" @click="startGame">
         Сыграть еще раз
       </button>
@@ -22,8 +34,18 @@
 </template>
 
 <script>
+import AppFullStats from "@/components/AppFullStats.vue";
+
 export default {
   name: "AppFinish",
+
+  components: {
+    AppFullStats,
+  },
+
+  data: () => ({
+    isFullStatsShowed: false,
+  }),
 
   props: {
     correctAnswers: {
@@ -38,11 +60,18 @@ export default {
       type: Object,
       required: true,
     },
+    fullStats: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   methods: {
     startGame() {
       this.$emit("startGame");
+    },
+    toggleFullStats() {
+      this.isFullStatsShowed = !this.isFullStatsShowed;
     },
   },
 };
@@ -66,5 +95,27 @@ export default {
 .finish-btn {
   display: block;
   margin: auto;
+}
+
+.show-full-stats {
+  background-color: transparent;
+  appearance: none;
+  border: none;
+  color: #fff;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+
+  &.is-showed {
+    img {
+      transform: rotate(180deg);
+    }
+  }
+
+  span {
+    margin-right: 0.5rem;
+  }
 }
 </style>
