@@ -6,10 +6,10 @@
     <div class="card greeting-description">
       <p>
         Если вы математик, то вы
-        <strike
+        <del
           ><a href="https://www.youtube.com/watch?v=A0_Abt4dzAA" target="_blank"
             >должны знать счет древних шизов</a
-          ></strike
+          ></del
         >
         очень легко справитесь с этой игрой.
       </p>
