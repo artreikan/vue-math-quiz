@@ -54,16 +54,11 @@ export default {
     this.$refs.gameInput.focus();
   },
 
-  watch: {
-    firstNumber() {
-      this.$refs.gameInput.focus();
-    },
-  },
-
   methods: {
     handleAnswer() {
       this.$emit("handleAnswer", this.userAnswer);
       this.userAnswer = "";
+      this.$refs.gameInput.focus();
     },
   },
 };
