@@ -54,7 +54,7 @@ export default {
       correctAnswers: 0,
       incorrectAnswers: 0,
       initialTime: 60,
-      gameTime: this.initialTime,
+      gameTime: 60,
       gameTimer: null,
       fullStats: [],
     };
@@ -90,7 +90,7 @@ export default {
       this.correctAnswers = 0;
       this.incorrectAnswers = 0;
       this.generateNumbers();
-      this.gameTime = this.initialTime;
+      this.gameTime = 60;
       this.isGreeting = false;
       this.isGameStarted = true;
       this.gameTimer = setInterval(() => {
