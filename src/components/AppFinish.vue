@@ -26,8 +26,13 @@
         </button>
         <app-full-stats :fullStats="fullStats" v-show="isFullStatsShowed"
       /></template>
-      <button class="btn finish-btn" type="button" @click="startGame">
-        Сыграть еще раз
+      <button
+        class="btn finish-btn"
+        type="button"
+        @click="startGame"
+        :disabled="isDelayed"
+      >
+        {{ restartBtnText }}
       </button>
     </div>
   </div>
@@ -43,9 +48,11 @@ export default {
     AppFullStats,
   },
 
-  data: () => ({
-    isFullStatsShowed: false,
-  }),
+  data() {
+    return {
+      isFullStatsShowed: false,
+    };
+  },
 
   props: {
     correctAnswers: {
@@ -63,6 +70,16 @@ export default {
     fullStats: {
       type: Array,
       default: () => [],
+    },
+    isDelayed: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  computed: {
+    restartBtnText() {
+      return this.isDelayed ? "Стартуем" : "Сыграть еще раз";
     },
   },
 

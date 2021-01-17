@@ -1,6 +1,10 @@
 <template>
   <div class="app-wrapper">
-    <app-greeting @startGame="startGame" v-if="isGreeting" />
+    <app-greeting
+      @startGame="startGame"
+      v-if="isGreeting"
+      :isDelayed="isDelayed"
+    />
     <app-game
       v-else-if="isGameStarted"
       :gameTime="gameTime"
@@ -15,19 +19,21 @@
       :incorrectAnswers="incorrectAnswers"
       :pluralForm="pluralForm"
       :fullStats="fullStats"
+      :isDelayed="isDelayed"
       @startGame="startGame"
     />
   </div>
 </template>
 
 <script>
-import { randomInteger } from "@/helpers";
+import { randomInteger, sleep } from "@/helpers";
 import AppGreeting from "@/components/AppGreeting.vue";
 import AppGame from "@/components/AppGame.vue";
 import AppFinish from "@/components/AppFinish.vue";
 
 const MIN_NUMBER = 0;
 const MAX_NUMBER = 50;
+const DELAY_BEFORE_GAME = 3000;
 
 export default {
   name: "App",
@@ -38,18 +44,21 @@ export default {
     AppFinish,
   },
 
-  data: () => ({
-    isGreeting: true,
-    isGameStarted: false,
-    firstNumber: 0,
-    secondNumber: 0,
-    correctAnswers: 0,
-    incorrectAnswers: 0,
-    initialTime: 60,
-    gameTime: 60,
-    gameTimer: null,
-    fullStats: [],
-  }),
+  data() {
+    return {
+      isGreeting: true,
+      isGameStarted: false,
+      isDelayed: false,
+      firstNumber: 0,
+      secondNumber: 0,
+      correctAnswers: 0,
+      incorrectAnswers: 0,
+      initialTime: 60,
+      gameTime: this.initialTime,
+      gameTimer: null,
+      fullStats: [],
+    };
+  },
 
   computed: {
     correctAnswer() {
@@ -75,12 +84,13 @@ export default {
   },
 
   methods: {
-    startGame() {
+    async startGame() {
+      await this.startDelayBeforeGame();
       this.fullStats = [];
       this.correctAnswers = 0;
       this.incorrectAnswers = 0;
       this.generateNumbers();
-      this.gameTime = 60;
+      this.gameTime = this.initialTime;
       this.isGreeting = false;
       this.isGameStarted = true;
       this.gameTimer = setInterval(() => {
@@ -91,9 +101,13 @@ export default {
         this.gameTime--;
       }, 1000);
     },
+    async startDelayBeforeGame() {
+      this.isDelayed = true;
+      await sleep(DELAY_BEFORE_GAME);
+      this.isDelayed = false;
+    },
     finishGame() {
       this.isGameStarted = false;
-      console.log(this.fullStats);
     },
     generateNumbers() {
       this.firstNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
@@ -195,6 +209,11 @@ a {
   line-height: 1;
   border-radius: 2rem;
   transition: all 0.4s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   &:hover,
   &:focus {

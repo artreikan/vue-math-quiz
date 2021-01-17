@@ -19,8 +19,13 @@
         Чем больше правильных ответов вы дадите, тем вы больший молодец <br />
         и пусечка.
       </p>
-      <button class="btn greeting-btn" type="button" @click="startGame">
-        Начать игру
+      <button
+        class="btn greeting-btn"
+        type="button"
+        @click="startGame"
+        :disabled="isDelayed"
+      >
+        {{ startBtnText }}
       </button>
     </div>
   </div>
@@ -29,6 +34,19 @@
 <script>
 export default {
   name: "AppGreeting",
+
+  props: {
+    isDelayed: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  computed: {
+    startBtnText() {
+      return this.isDelayed ? "Стартуем" : "Начать игру";
+    },
+  },
 
   methods: {
     startGame() {
