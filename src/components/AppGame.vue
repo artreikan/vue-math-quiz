@@ -12,6 +12,8 @@
         <input
           class="game-form-input"
           type="number"
+          inputmode="numeric"
+          pattern="[0-9]*"
           placeholder="Ваш ответ"
           v-model.number="userAnswer"
           ref="gameInput"
