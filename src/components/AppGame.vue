@@ -29,9 +29,11 @@
 export default {
   name: "AppGame",
 
-  data: () => ({
-    userAnswer: "",
-  }),
+  data() {
+    return {
+      userAnswer: "",
+    };
+  },
 
   props: {
     gameTime: {
