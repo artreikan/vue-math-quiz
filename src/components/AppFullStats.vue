@@ -5,7 +5,10 @@
       :key="statItem.answer"
       :class="statItem.type"
     >
-      {{ statItem.answer }}
+      <span>{{ statItem.answer }}</span>
+      <small v-if="statItem.extraData">
+        {{ statItem.extraData }}
+      </small>
     </li>
   </ul>
 </template>
@@ -26,6 +29,20 @@ export default {
 .full-stats {
   padding-left: 0;
   list-style-position: inside;
+
+  li {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-right: 10px;
+    }
+
+    small {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
 
   .correct {
     color: #52ebb5;

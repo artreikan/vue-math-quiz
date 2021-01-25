@@ -5,8 +5,7 @@
     </h1>
     <div class="card greeting-description">
       <p>
-        Если вы математик, то вы
-        очень легко справитесь с этой игрой.
+        Если вы математик, то вы очень легко справитесь с этой игрой.
       </p>
       <p>
         Цель игры достаточно простая: за <strong>60</strong> секунд вам нужно
@@ -35,11 +34,17 @@ export default {
       type: Boolean,
       required: true,
     },
+    delayTime: {
+      type: Number,
+      required: true,
+    },
   },
 
   computed: {
     startBtnText() {
-      return this.isDelayed ? "Стартуем" : "Начать игру";
+      return this.isDelayed
+        ? `Стартуем через ${this.delayTime}`
+        : "Начать игру";
     },
   },
 

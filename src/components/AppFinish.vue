@@ -75,11 +75,17 @@ export default {
       type: Boolean,
       required: true,
     },
+    delayTime: {
+      type: Number,
+      required: true,
+    },
   },
 
   computed: {
     restartBtnText() {
-      return this.isDelayed ? "Стартуем" : "Сыграть еще раз";
+      return this.isDelayed
+        ? `Стартуем через ${this.delayTime}`
+        : "Сыграть еще раз";
     },
   },
 

@@ -1,9 +1,11 @@
 <template>
   <div class="app-wrapper">
+    <app-record :record="record" />
     <app-greeting
       @startGame="startGame"
       v-if="isGreeting"
       :isDelayed="isDelayed"
+      :delayTime="delayTimeInSecs"
     />
     <app-game
       v-else-if="isGameStarted"
@@ -20,6 +22,7 @@
       :pluralForm="pluralForm"
       :fullStats="fullStats"
       :isDelayed="isDelayed"
+      :delayTime="delayTimeInSecs"
       @startGame="startGame"
     />
   </div>
@@ -27,6 +30,8 @@
 
 <script>
 import { randomInteger, sleep } from "@/helpers";
+import { getItem, setItem } from "@/persistance";
+import AppRecord from "@/components/AppRecord.vue";
 import AppGreeting from "@/components/AppGreeting.vue";
 import AppGame from "@/components/AppGame.vue";
 import AppFinish from "@/components/AppFinish.vue";
@@ -39,10 +44,13 @@ export default {
   name: "App",
 
   components: {
+    AppRecord,
     AppGreeting,
     AppGame,
     AppFinish,
   },
+
+  initialTime: 60,
 
   data() {
     return {
@@ -53,10 +61,12 @@ export default {
       secondNumber: 0,
       correctAnswers: 0,
       incorrectAnswers: 0,
-      initialTime: 60,
-      gameTime: 60,
+      gameTime: this.$options.initialTime,
       gameTimer: null,
+      delayTimeInSecs: DELAY_BEFORE_GAME / 1000,
+      delayTimer: null,
       fullStats: [],
+      record: getItem("record") || 0,
     };
   },
 
@@ -66,7 +76,7 @@ export default {
     },
     progressStyle() {
       return {
-        "animation-duration": `${this.initialTime}s`,
+        "animation-duration": `${this.$options.initialTime}s`,
         "animation-play-state": this.isGameStarted ? "running" : "paused",
       };
     },
@@ -81,16 +91,18 @@ export default {
 
   beforeUnmount() {
     clearInterval(this.gameTimer);
+    clearInterval(this.delayTimer);
   },
 
   methods: {
     async startGame() {
+      this.delayTimeInSecs = DELAY_BEFORE_GAME / 1000;
       await this.startDelayBeforeGame();
       this.fullStats = [];
       this.correctAnswers = 0;
       this.incorrectAnswers = 0;
       this.generateNumbers();
-      this.gameTime = 60;
+      this.gameTime = this.$options.initialTime;
       this.isGreeting = false;
       this.isGameStarted = true;
       this.gameTimer = setInterval(() => {
@@ -103,20 +115,28 @@ export default {
     },
     async startDelayBeforeGame() {
       this.isDelayed = true;
+      this.delayTimer = setInterval(() => {
+        if (this.delayTimeInSecs === 1) {
+          clearInterval(this.delayTimer);
+        }
+        this.delayTimeInSecs--;
+      }, 1000);
       await sleep(DELAY_BEFORE_GAME);
       this.isDelayed = false;
     },
     finishGame() {
       this.isGameStarted = false;
+      this.updateRecord();
     },
     generateNumbers() {
       this.firstNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
       this.secondNumber = randomInteger(MIN_NUMBER, MAX_NUMBER);
     },
-    createStatItem(type, userAnswer) {
+    createStatItem(type, userAnswer, extraData = "") {
       return {
         type,
         answer: `${this.firstNumber} + ${this.secondNumber} = ${userAnswer}`,
+        extraData,
       };
     },
     handleAnswer(userAnswer) {
@@ -125,10 +145,22 @@ export default {
         this.fullStats.push(this.createStatItem("correct", userAnswer));
       } else {
         this.incorrectAnswers++;
-        this.fullStats.push(this.createStatItem("incorrect", userAnswer));
+        this.fullStats.push(
+          this.createStatItem(
+            "incorrect",
+            userAnswer,
+            `// правильный ответ: ${this.correctAnswer}`
+          )
+        );
       }
 
       this.generateNumbers();
+    },
+    updateRecord() {
+      if (this.correctAnswers > this.record) {
+        this.record = this.correctAnswers;
+        setItem("record", this.correctAnswers);
+      }
     },
   },
 };
