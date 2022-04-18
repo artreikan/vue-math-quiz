@@ -19,9 +19,9 @@ export default {
   props: {
     fullStats: {
       type: Array,
-      default: () => [],
-    },
-  },
+      default: () => []
+    }
+  }
 };
 </script>
 

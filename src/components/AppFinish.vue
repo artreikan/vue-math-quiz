@@ -45,40 +45,40 @@ export default {
   name: "AppFinish",
 
   components: {
-    AppFullStats,
+    AppFullStats
   },
 
   data() {
     return {
-      isFullStatsShowed: false,
+      isFullStatsShowed: false
     };
   },
 
   props: {
     correctAnswers: {
       type: Number,
-      required: true,
+      required: true
     },
     incorrectAnswers: {
       type: Number,
-      required: true,
+      required: true
     },
     pluralForm: {
       type: Object,
-      required: true,
+      required: true
     },
     fullStats: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     isDelayed: {
       type: Boolean,
-      required: true,
+      required: true
     },
     delayTime: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
 
   computed: {
@@ -86,7 +86,7 @@ export default {
       return this.isDelayed
         ? `Стартуем через ${this.delayTime}`
         : "Сыграть еще раз";
-    },
+    }
   },
 
   methods: {
@@ -95,8 +95,8 @@ export default {
     },
     toggleFullStats() {
       this.isFullStatsShowed = !this.isFullStatsShowed;
-    },
-  },
+    }
+  }
 };
 </script>
 

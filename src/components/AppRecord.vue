@@ -11,9 +11,9 @@ export default {
   props: {
     record: {
       type: Number,
-      default: 0,
-    },
-  },
+      default: 0
+    }
+  }
 };
 </script>
 

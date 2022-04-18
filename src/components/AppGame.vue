@@ -31,27 +31,27 @@ export default {
 
   data() {
     return {
-      userAnswer: "",
+      userAnswer: ""
     };
   },
 
   props: {
     gameTime: {
       type: Number,
-      required: true,
+      required: true
     },
     firstNumber: {
       type: Number,
-      required: true,
+      required: true
     },
     secondNumber: {
       type: Number,
-      required: true,
+      required: true
     },
     progressStyle: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
 
   mounted() {
@@ -63,8 +63,8 @@ export default {
       this.$emit("handleAnswer", this.userAnswer);
       this.userAnswer = "";
       this.$refs.gameInput.focus();
-    },
-  },
+    }
+  }
 };
 </script>
 

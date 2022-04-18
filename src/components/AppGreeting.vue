@@ -32,12 +32,12 @@ export default {
   props: {
     isDelayed: {
       type: Boolean,
-      required: true,
+      required: true
     },
     delayTime: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
 
   computed: {
@@ -45,14 +45,14 @@ export default {
       return this.isDelayed
         ? `Стартуем через ${this.delayTime}`
         : "Начать игру";
-    },
+    }
   },
 
   methods: {
     startGame() {
       this.$emit("startGame");
-    },
-  },
+    }
+  }
 };
 </script>
 

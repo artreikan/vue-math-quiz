@@ -47,7 +47,7 @@ export default {
     AppRecord,
     AppGreeting,
     AppGame,
-    AppFinish,
+    AppFinish
   },
 
   initialTime: 60,
@@ -66,7 +66,7 @@ export default {
       delayTimeInSecs: DELAY_BEFORE_GAME / 1000,
       delayTimer: null,
       fullStats: [],
-      record: getItem("record") || 0,
+      record: getItem("record") || 0
     };
   },
 
@@ -77,16 +77,15 @@ export default {
     progressStyle() {
       return {
         "animation-duration": `${this.$options.initialTime}s`,
-        "animation-play-state": this.isGameStarted ? "running" : "paused",
+        "animation-play-state": this.isGameStarted ? "running" : "paused"
       };
     },
     pluralForm() {
       return {
         correct: this.correctAnswers === 1 ? "правильный" : "правильных",
-        incorrect:
-          this.incorrectAnswers === 1 ? "неправильный" : "неправильных",
+        incorrect: this.incorrectAnswers === 1 ? "неправильный" : "неправильных"
       };
-    },
+    }
   },
 
   beforeUnmount() {
@@ -136,7 +135,7 @@ export default {
       return {
         type,
         answer: `${this.firstNumber} + ${this.secondNumber} = ${userAnswer}`,
-        extraData,
+        extraData
       };
     },
     handleAnswer(userAnswer) {
@@ -161,8 +160,8 @@ export default {
         this.record = this.correctAnswers;
         setItem("record", this.correctAnswers);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
