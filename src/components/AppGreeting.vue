@@ -1,12 +1,7 @@
 <template>
   <div class="greeting">
-    <h1 class="greeting-title">
-      Math Quiz
-    </h1>
+    <h1 class="greeting-title">Math Quiz</h1>
     <div class="card greeting-description">
-      <p>
-        Если вы математик, то вы очень легко справитесь с этой игрой.
-      </p>
       <p>
         Цель игры достаточно простая: за <strong>60</strong> секунд вам нужно
         решить максимальное количество простых арифметических задачек.<br />
@@ -32,12 +27,12 @@ export default {
   props: {
     isDelayed: {
       type: Boolean,
-      required: true
+      required: true,
     },
     delayTime: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
 
   computed: {
@@ -45,14 +40,14 @@ export default {
       return this.isDelayed
         ? `Стартуем через ${this.delayTime}`
         : "Начать игру";
-    }
+    },
   },
 
   methods: {
     startGame() {
       this.$emit("startGame");
-    }
-  }
+    },
+  },
 };
 </script>
 
